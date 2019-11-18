@@ -11,7 +11,11 @@ import Button from '../components/Button';
 import { drawer } from "../navigator/AppNavigation.js";
 import NavigationService from './NavigationService';
 
-class LeftMenu extends Component {
+export default class LeftMenu extends Component {
+  constructor(props) {
+    super(props); // super arguman geçmenizi sağlar eğer constructor kullanmak isterseniz kullanmak zorunlu oluyor.
+
+  };
 
   render() {
     return (
@@ -62,5 +66,3 @@ class LeftMenu extends Component {
     );
   }
 }
-
-export default LeftMenu;

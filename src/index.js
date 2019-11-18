@@ -3,10 +3,11 @@ import  { createStackNavigator }  from 'react-navigation';
 
 import {
   HomeScreen,
-  LoginScreen,
   RegisterScreen,
   Dashboard
 } from './screens';
+
+import LoginScreen from '../src/screens/LoginScreen';
 
 const Router = createStackNavigator(
   {
@@ -16,7 +17,7 @@ const Router = createStackNavigator(
     Dashboard,
   },
   {
-    initialRouteName: 'Dashboard',
+    initialRouteName: 'HomeScreen',
     headerMode: 'none',
   }
 );

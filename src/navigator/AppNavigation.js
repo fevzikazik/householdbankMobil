@@ -34,7 +34,7 @@ const AppStack = createStackNavigator({
   }
 },
 {
-  initialRouteName: 'Transfer',
+  initialRouteName: 'Accounts',
 });
 
 export const drawer = createRef();

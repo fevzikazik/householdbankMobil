@@ -1,5 +1,5 @@
-import React, { memo, useState } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { TouchableOpacity, StyleSheet, Text, View, Alert } from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Header from '../components/Header';
@@ -7,69 +7,132 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import BackButton from '../components/BackButton';
 import { theme } from '../core/theme';
-import { emailValidator, passwordValidator } from '../core/utils';
 import { Paragraph } from 'react-native-paper';
+import {
+  passValidator,
+  tcknValidator,
+} from '../core/utils';
+import Loader from '../core/loader';
 
-const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState({ value: '', error: '' });
-  const [password, setPassword] = useState({ value: '', error: '' });
+export default class LoginScreen extends Component {
 
-  const _onLoginPressed = () => {
-    const emailError = emailValidator(email.value);
-    const passwordError = passwordValidator(password.value);
+  constructor(props) {
+    super(props); // super arguman geçmenizi sağlar eğer constructor kullanmak isterseniz kullanmak zorunlu oluyor.
 
-    if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
+    this.state = { // burası bind da kullandığım değerler
+      loading: false,
+      tckn: '',
+      pass: '',
+      tcknError: '',
+      passwordError: ''
+    };
+
+  };
+
+  goLogin = () => {
+    const tcknError = tcknValidator(this.state.tckn);
+    const passwordError = passValidator(this.state.pass);
+
+    if (tcknError || passwordError) {
+      //alert(tcknError);
+      //alert(passwordError);
+      this.setState({ tcknError, passwordError })
       return;
     }
 
-    navigation.navigate('Dashboard');
+    this.setState({ loading: true });
+    var tckn = this.state.tckn;
+    var pass = this.state.pass;
+    //alert(tckn + " " + pass);
+
+    fetch('https://householdwebapi.azurewebsites.net/api/Musteri/' + tckn,
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var result = responseData['Result'];
+        if (result == "1") {
+          //alert(JSON.stringify(responseData['Data'][0]));
+          var sifre = responseData['Data'][0]['sifre'];
+          if (sifre == pass) {
+            this.setState({ loading: false });
+            alert('Giriş Yapıldı!');
+            this.props.navigation.navigate('Dashboard');
+          }
+          else {
+            this.setState({ loading: false });
+            alert('Şifre Yanlış!');
+          }
+        }
+        else {
+          this.setState({ loading: false });
+          alert('TCKN Bulunamadı!');
+        }
+      })
+      .catch((error) => {
+        alert(error);
+      })
+
+
   };
 
-  return (
-    <Background>
-      <BackButton goBack={() => navigation.navigate('HomeScreen')} />
+  render() {
 
-      <Logo />
+    return (
+      <Background>
+        <Loader
+          loading={this.state.loading} />
+        <BackButton goBack={() => this.props.navigation.navigate('HomeScreen')} />
 
-      <Header>Hoşgeldiniz</Header>
+        <Logo />
 
-      <TextInput
-        label="TCKN"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={text => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
+        <Header>Hoşgeldiniz</Header>
 
-      <TextInput
-        label="Şifre"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={text => setPassword({ value: text, error: '' })}
-        error={!!password.error}
-        errorText={password.error}
-        secureTextEntry
-      />
+        <TextInput secureTextEntry={true}
+          label="TCKN"
+          onChangeText={(tckn) => {
+            this.setState({ tckn, tcknError: '' });
+          }}
+          value={this.state.tckn}
+          error={!!this.state.tcknError}
+          errorText={this.state.tcknError}
+          maxLength={11}
+          keyboardType={'numeric'}
 
-      <Button mode="contained" onPress={_onLoginPressed}>
-        Giriş Yap
+        />
+
+        <TextInput secureTextEntry={true}
+          label="Şifre"
+          onChangeText={(pass) => {
+            this.setState({ pass, passwordError: '' });
+          }}
+          value={this.state.pass}
+          error={!!this.state.passwordError}
+          errorText={this.state.passwordError}
+          maxLength={8}
+          keyboardType={'numeric'}
+        />
+
+        <Button mode="contained" onPress={this.goLogin.bind(this)}>
+          Giriş Yap
       </Button>
 
-      <View style={styles.row}>
-        <Text style={styles.label}>Kayıtlı Değilmisin? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
-          <Text style={styles.link}>Hemen Ol</Text>
-        </TouchableOpacity>
-      </View>
-    </Background>
-  );
+        <View style={styles.row}>
+          <Text style={styles.label}>Kayıtlı Değilmisin? </Text>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('RegisterScreen')}>
+            <Text style={styles.link}>Hemen Ol</Text>
+          </TouchableOpacity>
+        </View>
+      </Background>
+    )
+  };
+
 };
 
 const styles = StyleSheet.create({
@@ -90,5 +153,3 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
   },
 });
-
-export default memo(LoginScreen);
