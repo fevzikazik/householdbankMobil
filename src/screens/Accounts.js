@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { Icon, ListItem } from 'react-native-elements'
 import { StyleSheet, FlatList, Text } from 'react-native';
 import { emailValidator } from '../core/utils';
@@ -6,23 +6,51 @@ import Background from '../components/Background';
 import Header from '../components/Header';
 import { theme } from '../core/theme';
 import Button from '../components/Button';
-import { drawer } from "../navigator/AppNavigation.js";
+import { drawer } from "./Dashboard";
 
-export default function ForgotPasswordScreen({ navigation }) {
-  const [email, setEmail] = useState({ value: '', error: '' });
+export default class Accounts extends Component {
+  constructor(props) {
+    super(props);
 
-  const _onSendPressed = () => {
-    const emailError = emailValidator(email.value);
-
-    if (emailError) {
-      setEmail({ ...email, error: emailError });
-      return;
-    }
-
-    navigation.navigate('LoginScreen');
+    this.state = {
+      accs: []
+    };
+    
+    alert('accs: ' + JSON.stringify(this.props));
   };
 
-  const list = [
+  static navigationOptions = {
+    title: 'Hesaplarım',
+    headerLeft: <Icon name="menu" size={35} onPress={() => drawer.current.open()} />
+  };
+
+  GetAccounts = () => {
+    let Customer = this.props.navigation.state.params.musteri;
+    let tcKimlikNo = Customer.tcKimlikNo;
+
+    fetch('https://householdwebapi.azurewebsites.net/api/Hesap/' + tcKimlikNo,
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var accListCount = responseData['Data'].length;
+        //alert(accListCount);
+        var accList= responseData['Data'];
+        this.setState({ accs: accList });
+        //alert(accList);
+      })
+      .catch((error) => {
+        alert(error);
+      })
+  }
+
+  list = [
     {
       hesapEkNo: '5001',
       subtitle: 'Vadeli Hesap'
@@ -33,24 +61,25 @@ export default function ForgotPasswordScreen({ navigation }) {
     },
   ]
 
+  render() {
     return (
       <Background>
-  
+
         <Header>Yeni Hesap Aç</Header>
-  
-        <Button mode="contained" onPress={() => drawer.current.open()} style={styles.button}>
+
+        <Button mode="contained" onPress={() => this.GetAccounts()} style={styles.button}>
           Hesap Aç
         </Button>
-  
+
         <Header>Hesaplarım:</Header>
         <FlatList
-          style={{minWidth:300}}
-          data={list}
+          style={{ minWidth: 300 }}
+          data={this.state.accs}
           renderItem={({ item }) => (
             <ListItem
               onPress={() => drawer.current.open()}
               title={item.hesapEkNo}
-              subtitle={item.subtitle}
+              subtitle={item.bakiye}
               rightAvatar={{
                 source: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' && { uri: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' }
               }}
@@ -61,7 +90,8 @@ export default function ForgotPasswordScreen({ navigation }) {
         />
       </Background>
     )
-}
+  }
+};
 
 const styles = StyleSheet.create({
   back: {
@@ -77,7 +107,3 @@ const styles = StyleSheet.create({
   },
 });
 
-ForgotPasswordScreen.navigationOptions = {
-  title: 'Hesaplarım',
-  headerLeft: <Icon name="menu" size={35} onPress={() => drawer.current.open()} />
-};

@@ -1,5 +1,5 @@
 import { createAppContainer } from 'react-navigation';
-import  { createStackNavigator }  from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import {
   HomeScreen,
@@ -17,7 +17,7 @@ const Router = createStackNavigator(
     Dashboard,
   },
   {
-    initialRouteName: 'HomeScreen',
+    initialRouteName: 'LoginScreen',
     headerMode: 'none',
   }
 );

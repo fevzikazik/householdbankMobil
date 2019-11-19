@@ -8,13 +8,13 @@ import TextInput from '../components/TextInput';
 import { theme } from '../core/theme';
 import Button from '../components/Button';
 
-import { drawer } from "../navigator/AppNavigation.js";
+import { drawer } from "../screens/Dashboard";
 import NavigationService from './NavigationService';
 
 export default class LeftMenu extends Component {
   constructor(props) {
-    super(props); // super arguman geçmenizi sağlar eğer constructor kullanmak isterseniz kullanmak zorunlu oluyor.
-
+    super(props);
+    //alert('LeftMenu: ' + JSON.stringify(this.props.musteri));
   };
 
   render() {
@@ -25,7 +25,7 @@ export default class LeftMenu extends Component {
         <Header>Profilim</Header>
 
         <Button mode="contained" onPress={() => {
-          NavigationService.navigate('ManageProfile');
+          NavigationService.navigate('ManageProfile', { musteri: this.props.musteri });
           this.props.drawer.current.close();
         }}>
           Yönet
@@ -33,31 +33,31 @@ export default class LeftMenu extends Component {
         <Header>Menü</Header>
 
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('Accounts');
+          NavigationService.navigate('Accounts', { musteri: this.props.musteri });
           this.props.drawer.current.close();
         }}>
           Hesaplarım
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('Transfer');
+          NavigationService.navigate('Transfer', { musteri: this.props.musteri });
           this.props.drawer.current.close();
         }}>
           Havale Yap
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('TransferSelf');
+          NavigationService.navigate('TransferSelf', { musteri: this.props.musteri });
           this.props.drawer.current.close();
         }}>
           Virman Yap
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('HGS');
+          NavigationService.navigate('HGS', { musteri: this.props.musteri });
           this.props.drawer.current.close();
         }}>
           HGS
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('CreditPrediction');
+          NavigationService.navigate('CreditPrediction', { musteri: this.props.musteri });
           this.props.drawer.current.close();
         }}>
           Kredi Tahmini

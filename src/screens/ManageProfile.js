@@ -6,7 +6,7 @@ import Background from '../components/Background';
 import Header from '../components/Header';
 import { theme } from '../core/theme';
 import Button from '../components/Button';
-import { drawer } from "../navigator/AppNavigation.js";
+import { drawer } from "./Dashboard";
 
 export default function ManageProfile({ navigation }) {
   

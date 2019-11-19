@@ -55,15 +55,19 @@ export default class LoginScreen extends Component {
       })
 
       .then((response) => response.json())
-      .then((responseData) => {
-        var result = responseData['Result'];
+      .then((resp) => {
+        var result = resp['Result'];
         if (result == "1") {
-          //alert(JSON.stringify(responseData['Data'][0]));
-          var sifre = responseData['Data'][0]['sifre'];
+          //alert(JSON.stringify(resp['Data'][0]));
+          var sifre = resp['Data'][0]['sifre'];
           if (sifre == pass) {
             this.setState({ loading: false });
-            alert('Giriş Yapıldı!');
-            this.props.navigation.navigate('Dashboard');
+
+            var musteri=resp['Data'][0];         
+            this.setState({tckn: '', pass: '' });
+            this.props.navigation.navigate('Dashboard',{musteri: musteri });
+            
+            //alert('Giriş Yapıldı!');
           }
           else {
             this.setState({ loading: false });
@@ -94,7 +98,7 @@ export default class LoginScreen extends Component {
 
         <Header>Hoşgeldiniz</Header>
 
-        <TextInput secureTextEntry={true}
+        <TextInput
           label="TCKN"
           onChangeText={(tckn) => {
             this.setState({ tckn, tcknError: '' });
