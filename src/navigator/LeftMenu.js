@@ -25,7 +25,7 @@ export default class LeftMenu extends Component {
         <Header>Profilim</Header>
 
         <Button mode="contained" onPress={() => {
-          NavigationService.navigate('ManageProfile', { musteri: this.props.musteri });
+          NavigationService.navigate('ManageProfile');
           this.props.drawer.current.close();
         }}>
           Yönet
@@ -33,31 +33,31 @@ export default class LeftMenu extends Component {
         <Header>Menü</Header>
 
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('Accounts', { musteri: this.props.musteri });
+          NavigationService.navigate('Accounts');
           this.props.drawer.current.close();
         }}>
           Hesaplarım
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('Transfer', { musteri: this.props.musteri });
+          NavigationService.navigate('Transfer');
           this.props.drawer.current.close();
         }}>
           Havale Yap
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('TransferSelf', { musteri: this.props.musteri });
+          NavigationService.navigate('TransferSelf');
           this.props.drawer.current.close();
         }}>
           Virman Yap
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('HGS', { musteri: this.props.musteri });
+          NavigationService.navigate('HGS');
           this.props.drawer.current.close();
         }}>
           HGS
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('CreditPrediction', { musteri: this.props.musteri });
+          NavigationService.navigate('CreditPrediction');
           this.props.drawer.current.close();
         }}>
           Kredi Tahmini

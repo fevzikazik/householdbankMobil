@@ -8,6 +8,7 @@ import NavigationService from '../navigator/NavigationService';
 
 import ManageProfile from './ManageProfile';
 import Accounts from './Accounts';
+import AccountDetail from './AccountDetail';
 import Transfer from './Transfer';
 import TransferSelf from './TransferSelf';
 import HGS from './HGS';
@@ -22,6 +23,9 @@ const AppStack = createStackNavigator({
   Accounts: {
     screen: Accounts
   },
+  AccountDetail: {
+    screen: AccountDetail
+  },
   Transfer: {
     screen: Transfer
   },
@@ -35,12 +39,12 @@ const AppStack = createStackNavigator({
     screen: CreditPrediction
   }
 },
-{
-  initialRouteName: 'Accounts',
-});
+  {
+    initialRouteName: 'Accounts',
+  });
 
-//const AppCon = createAppContainer(AppStack);
-export default createAppContainer(AppStack);
+const AppCon = createAppContainer(AppStack);
+//export default createAppContainer(AppStack);
 
 export const drawer = createRef();
 
@@ -50,7 +54,7 @@ const defaultScalingDrawerConfig = {
   swipeOffset: 20
 };
 
-class Dashboard extends Component {
+export default class Dashboard extends Component {
   constructor(props) {
     super(props);
 
@@ -60,7 +64,7 @@ class Dashboard extends Component {
     return (
       <ScalingDrawer
         ref={drawer}
-        content={<LeftMenu drawer={drawer} musteri={this.props.navigation.state.params.musteri} />}
+        content={<LeftMenu drawer={drawer} musteri={this.props.navigation.state.params.musteri} navigation={this.props.navigation} />}
         {...defaultScalingDrawerConfig}
         onClose={() => console.log('close')}
         onOpen={() => console.log('open')}
@@ -69,6 +73,7 @@ class Dashboard extends Component {
           ref={navigatorRef => {
             NavigationService.setTopLevelNavigator(navigatorRef);
           }}
+          screenProps={{musteri:this.props.navigation.state.params.musteri}}
         />
       </ScalingDrawer>
     );

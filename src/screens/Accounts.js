@@ -1,6 +1,6 @@
 import React, { useState, Component } from 'react';
 import { Icon, ListItem } from 'react-native-elements'
-import { StyleSheet, FlatList, Text } from 'react-native';
+import { StyleSheet, FlatList, Text, ScrollView } from 'react-native';
 import { emailValidator } from '../core/utils';
 import Background from '../components/Background';
 import Header from '../components/Header';
@@ -15,8 +15,12 @@ export default class Accounts extends Component {
     this.state = {
       accs: []
     };
-    
-    alert('accs: ' + JSON.stringify(this.props));
+
+    //alert('accs: ' + JSON.stringify(this.props));
+  };
+
+  componentDidMount = () => {
+    this.GetAccounts();
   };
 
   static navigationOptions = {
@@ -25,7 +29,7 @@ export default class Accounts extends Component {
   };
 
   GetAccounts = () => {
-    let Customer = this.props.navigation.state.params.musteri;
+    let Customer = this.props.screenProps.musteri;
     let tcKimlikNo = Customer.tcKimlikNo;
 
     fetch('https://householdwebapi.azurewebsites.net/api/Hesap/' + tcKimlikNo,
@@ -41,7 +45,7 @@ export default class Accounts extends Component {
       .then((responseData) => {
         var accListCount = responseData['Data'].length;
         //alert(accListCount);
-        var accList= responseData['Data'];
+        var accList = responseData['Data'];
         this.setState({ accs: accList });
         //alert(accList);
       })
@@ -50,45 +54,37 @@ export default class Accounts extends Component {
       })
   }
 
-  list = [
-    {
-      hesapEkNo: '5001',
-      subtitle: 'Vadeli Hesap'
-    },
-    {
-      hesapEkNo: '5002',
-      subtitle: 'Vadeli Hesap'
-    },
-  ]
-
   render() {
     return (
-      <Background>
+      <ScrollView>
+        <Background>
 
-        <Header>Yeni Hesap Aç</Header>
+          <Header>Yeni Hesap Aç</Header>
 
-        <Button mode="contained" onPress={() => this.GetAccounts()} style={styles.button}>
-          Hesap Aç
+          <Button mode="contained" onPress={() => pass} style={styles.button}>
+            Hesap Aç
         </Button>
 
-        <Header>Hesaplarım:</Header>
-        <FlatList
-          style={{ minWidth: 300 }}
-          data={this.state.accs}
-          renderItem={({ item }) => (
-            <ListItem
-              onPress={() => drawer.current.open()}
-              title={item.hesapEkNo}
-              subtitle={item.bakiye}
-              rightAvatar={{
-                source: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' && { uri: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' }
-              }}
-              bottomDivider
-            />
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </Background>
+          <Header>Hesaplarım:</Header>
+          <FlatList
+            style={{ minWidth: 300 }}
+            data={this.state.accs}
+            renderItem={({ item }) => (
+              <ListItem
+                topDivider
+                onPress={() => this.props.navigation.navigate('AccountDetail', { selectedAcc: item })}
+                title={item.hesapEkNo}
+                subtitle={'Bakiye: ' + item.bakiye + ' TL'}
+                rightAvatar={{
+                  source: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' && { uri: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' }
+                }}
+                bottomDivider
+              />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </Background>
+      </ScrollView>
     )
   }
 };
