@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View, Alert,ScrollView } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, Alert, ScrollView } from 'react-native';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Header from '../components/Header';
@@ -18,6 +18,7 @@ import {
   adresValidator
 } from '../core/utils';
 import Loader from '../core/loader';
+import DatePicker from 'react-native-datepicker'
 
 export default class RegisterScreen extends Component {
 
@@ -28,8 +29,10 @@ export default class RegisterScreen extends Component {
       loading: false,
       tckn: '',
       pass: '',
+      confirmPass: '',
       tcknError: '',
       passwordError: '',
+      confirmPasswordError: '',
       adsoyad: '',
       adsoyadError: '',
       tel: '',
@@ -44,20 +47,107 @@ export default class RegisterScreen extends Component {
 
   };
 
-  goRegister = () => {
+  hesapNoOlustur = async () => {
+
+    return fetch('https://householdwebapi.azurewebsites.net/api/Musteri',
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var result = responseData['Result'];
+        if (result == "1") {
+          var essiz = false;
+          var hesapNo;
+          do {
+            hesapNo = Math.floor(Math.random() * ((999999999 - 100000000) + 1) + 100000000);
+            var hspNo = hesapNo.toString();
+
+            for (key in responseData) {
+              if (((typeof key) == 'hesapNo') && key == hspNo) {
+                break;
+              }
+              essiz = true;
+            }
+          } while (!essiz);
+
+          var essizHesapNo = hesapNo.toString();
+          //alert('essizHesapNo: ' + essizHesapNo);
+          return essizHesapNo;
+        }
+        else {
+          alert("API ile bağlantı kurulamadı!");
+        }
+      })
+      .catch((error) => {
+        alert("Hata: " + error);
+      })
+  };
+
+  hesapOlustur = async () => {
+
+    return fetch('https://householdwebapi.azurewebsites.net/api/Musteri',
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var result = responseData['Result'];
+        if (result == "1") {
+          var essiz = false;
+          var hesapNo;
+          do {
+            hesapNo = Math.floor(Math.random() * ((999999999 - 100000000) + 1) + 100000000);
+            var hspNo = hesapNo.toString();
+
+            for (key in responseData) {
+              if (((typeof key) == 'hesapNo') && key == hspNo) {
+                break;
+              }
+              essiz = true;
+            }
+          } while (!essiz);
+
+          var essizHesapNo = hesapNo.toString();
+          //alert('essizHesapNo: ' + essizHesapNo);
+          return essizHesapNo;
+        }
+        else {
+          alert("API ile bağlantı kurulamadı!");
+        }
+      })
+      .catch((error) => {
+        alert("Hata: " + error);
+      })
+  };
+
+  goRegister = async () => {
     const tcknError = tcknValidator(this.state.tckn);
     const adsoyadError = adsoyadValidator(this.state.adsoyad);
     const passwordError = passValidator(this.state.pass);
+    const confirmPasswordError = passValidator(this.state.confirmPass);
     const emailError = emailValidator(this.state.email);
     const telError = telValidator(this.state.tel);
     const dogumtarihError = dogumtarihValidator(this.state.dogumtarih);
     const adresError = adresValidator(this.state.adres);
 
-    if (tcknError || adsoyadError || passwordError || emailError || telError || dogumtarihError || adresError) {
-      this.setState({ 
+    //var hesapNo = this.hesapNoOlustur();
+    if (tcknError || adsoyadError || passwordError || confirmPasswordError || emailError || telError || dogumtarihError || adresError) {
+      this.setState({
         tcknError,
         adsoyadError,
         passwordError,
+        confirmPasswordError,
         emailError,
         telError,
         dogumtarihError,
@@ -65,6 +155,10 @@ export default class RegisterScreen extends Component {
       });
       return;
     }
+
+
+    const hesapNo = await this.hesapNoOlustur();
+    //alert(hesapNo);
 
     this.setState({ loading: true });
 
@@ -83,7 +177,7 @@ export default class RegisterScreen extends Component {
           'dogumTarihi': this.state.dogumtarih,
           'telefon': this.state.tel,
           'adres': this.state.adres,
-          'hesapNo': '000000000'
+          'hesapNo': hesapNo
         })
       })
 
@@ -91,6 +185,7 @@ export default class RegisterScreen extends Component {
       .then((responseData) => {
         var result = responseData['Result'];
         if (result == "1") {
+          //const sonuc = await this.hesapOlustur();
           this.setState({ loading: false });
           alert('Kayıt Yapıldı!');
           this.props.navigation.navigate('LoginScreen');
@@ -112,123 +207,157 @@ export default class RegisterScreen extends Component {
     return (
       <ScrollView >
         <Background>
-        <Loader
-          loading={this.state.loading} />
-        <BackButton goBack={() => this.props.navigation.navigate('HomeScreen')} />
+          <Loader
+            loading={this.state.loading} />
+          <BackButton goBack={() => this.props.navigation.navigate('HomeScreen')} />
 
-        <Logo />
+          <Logo />
 
-        <Header>Kayıt Ol</Header>
+          <Header>Kayıt Ol</Header>
 
-        <TextInput
-          label="TCKN"
-          onChangeText={(tckn) => {
-            this.setState({ tckn, tcknError: '' });
-          }}
-          value={this.state.tckn}
-          error={!!this.state.tcknError}
-          errorText={this.state.tcknError}
-          maxLength={11}
-          keyboardType={'numeric'}
+          <TextInput
+            label="TCKN"
+            onChangeText={(tckn) => {
+              this.setState({ tckn, tcknError: '' });
+            }}
+            value={this.state.tckn}
+            error={!!this.state.tcknError}
+            errorText={this.state.tcknError}
+            maxLength={11}
+            keyboardType={'numeric'}
 
-        />
+          />
 
-        <TextInput
-          label="Ad Soyad"
-          onChangeText={(adsoyad) => {
-            this.setState({ adsoyad, adsoyadError: '' });
-          }}
-          value={this.state.adsoyad}
-          error={!!this.state.adsoyadError}
-          errorText={this.state.adsoyadError}
-          maxLength={11}
+          <TextInput
+            label="Ad Soyad"
+            onChangeText={(adsoyad) => {
+              this.setState({ adsoyad, adsoyadError: '' });
+            }}
+            value={this.state.adsoyad}
+            error={!!this.state.adsoyadError}
+            errorText={this.state.adsoyadError}
+            maxLength={50}
 
-        />
+          />
 
-        <TextInput secureTextEntry={true}
-          label="Şifre"
-          onChangeText={(pass) => {
-            this.setState({ pass, passwordError: '' });
-          }}
-          value={this.state.pass}
-          error={!!this.state.passwordError}
-          errorText={this.state.passwordError}
-          maxLength={8}
-          keyboardType={'numeric'}
-        />
+          <TextInput secureTextEntry={true}
+            label="Şifre"
+            onChangeText={(pass) => {
+              this.setState({ pass, passwordError: '' });
+              if (pass.length === 8 && this.state.confirmPass !== '' && this.state.confirmPass.length === 8) {
+                if (this.state.confirmPass !== pass) {
+                  this.setState({ passwordError: 'Şifreler Farklı!' });
+                } else {
+                  this.setState({ passwordError: '' });
+                }
+              } else {
+                this.setState({ passwordError: '' });
+              }
+            }}
+            value={this.state.pass}
+            error={!!this.state.passwordError}
+            errorText={this.state.passwordError}
+            maxLength={8}
+            keyboardType={'numeric'}
+          />
 
-        <TextInput secureTextEntry={true}
-          label="ŞifreTekrar"
-          onChangeText={(pass) => {
-            this.setState({ pass, passwordError: '' });
-          }}
-          value={this.state.pass}
-          error={!!this.state.passwordError}
-          errorText={this.state.passwordError}
-          maxLength={8}
-          keyboardType={'numeric'}
-        />
+          <TextInput secureTextEntry={true}
+            label="Şifre Tekrar"
+            onChangeText={(confirmPass) => {
+              this.setState({ confirmPass , confirmPasswordError: '' });
+              if (confirmPass.length === 8) {
+                if (this.state.pass !== confirmPass) {
+                  this.setState({ confirmPasswordError: 'Şifreler Farklı!' });
+                } else {
+                  this.setState({ confirmPasswordError: '' });
+                }
+              } else {
+                this.setState({ confirmPasswordError: '' });
+              }
+            }}
+            value={this.state.confirmPass}
+            error={!!this.state.confirmPasswordError}
+            errorText={this.state.confirmPasswordError}
+            maxLength={8}
+            keyboardType={'numeric'}
+          />
 
-        <TextInput
-          label="Telefon"
-          onChangeText={(tel) => {
-            this.setState({ tel, telError: '' });
-          }}
-          value={this.state.tel}
-          error={!!this.state.telError}
-          errorText={this.state.telError}
-          maxLength={11}
+          <TextInput
+            label="Telefon"
+            onChangeText={(tel) => {
+              this.setState({ tel, telError: '' });
+            }}
+            value={this.state.tel}
+            error={!!this.state.telError}
+            errorText={this.state.telError}
+            maxLength={11}
 
-        />
+          />
 
-        <TextInput
-          label="Eposta"
-          returnKeyType="next"
-          value={this.state.email}
-          onChangeText={(email) => {
-            this.setState({ email, emailError: '' });
-          }}
-          error={!!this.state.emailError}
-          errorText={this.state.emailError}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
+          <TextInput
+            label="Eposta"
+            returnKeyType="next"
+            value={this.state.email}
+            onChangeText={(email) => {
+              this.setState({ email, emailError: '' });
+            }}
+            error={!!this.state.emailError}
+            errorText={this.state.emailError}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+            maxLength={50}
+          />
 
-        <TextInput
-          label="Doğum tarihi"
-          onChangeText={(dogumtarih) => {
-            this.setState({ dogumtarih, dogumtarihError: '' });
-          }}
-          value={this.state.dogumtarih}
-          error={!!this.state.dogumtarihError}
-          errorText={this.state.dogumtarihError}
-        />
+          <DatePicker
+            style={{ width: 200 }}
+            date={this.state.dogumtarih}
+            mode="date"
+            placeholder="Doğum Tarihi Seçin"
+            format="YYYY-MM-DD"
+            minDate="1920-01-01"
+            maxDate="2001-01-01"
+            confirmBtnText="Seç"
+            cancelBtnText="İptal"
+            onDateChange={(date) => { this.setState({ dogumtarih: date, dogumtarihError: '' }) }}
+            hideText={true}
+          />
 
-        <TextInput
-          label="Adres"
-          onChangeText={(adres) => {
-            this.setState({ adres, adresError: '' });
-          }}
-          value={this.state.adres}
-          error={!!this.state.adresError}
-          errorText={this.state.adresError}
-          maxLength={150}
+          <TextInput
+            label="Doğum tarihi"
+            onChangeText={(dogumtarih) => {
+              this.setState({ dogumtarih, dogumtarihError: '' });
+            }}
+            value={this.state.dogumtarih}
+            error={!!this.state.dogumtarihError}
+            errorText={this.state.dogumtarihError}
+            editable={false}
+          />
 
-        />
+          <TextInput
+            label="Adres"
+            onChangeText={(adres) => {
+              this.setState({ adres, adresError: '' });
+            }}
+            value={this.state.adres}
+            error={!!this.state.adresError}
+            errorText={this.state.adresError}
+            maxLength={150}
 
-        <Button mode="contained" onPress={this.goRegister.bind(this)}>
-          Kayıt Ol
-      </Button>
+          />
 
-        <View style={styles.row}>
-          <Text style={styles.label}>Zaten Kayıtlı mısın? </Text>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('LoginScreen')}>
-            <Text style={styles.link}>Giriş Yap</Text>
-          </TouchableOpacity>
-        </View>
-      </Background>
+          <Button mode="contained" onPress={this.goRegister.bind(this)}>
+            Kayıt Ol
+          </Button>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Zaten Kayıtlı mısın? </Text>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('LoginScreen')}>
+              <Text style={styles.link}>Giriş Yap</Text>
+            </TouchableOpacity>
+          </View>
+        </Background>
       </ScrollView >
     )
   };

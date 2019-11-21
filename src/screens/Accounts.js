@@ -15,7 +15,7 @@ export default class Accounts extends Component {
     this.state = {
       accs: []
     };
-
+    
     //alert('accs: ' + JSON.stringify(this.props));
   };
 
@@ -30,6 +30,7 @@ export default class Accounts extends Component {
 
   GetAccounts = () => {
     let Customer = this.props.screenProps.musteri;
+
     let tcKimlikNo = Customer.tcKimlikNo;
 
     fetch('https://householdwebapi.azurewebsites.net/api/Hesap/' + tcKimlikNo,

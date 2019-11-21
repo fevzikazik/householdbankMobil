@@ -12,7 +12,7 @@ export const passValidator = password => {
 
   return '';
 };
-adsoyadValidator
+
 export const tcknValidator = tckn => {
   if (!tckn || tckn.length != 11) return '11 haneli TCKN girin.';
 
