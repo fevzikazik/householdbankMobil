@@ -19,6 +19,8 @@ import {
 } from '../core/utils';
 import Loader from '../core/loader';
 import DatePicker from 'react-native-datepicker'
+import moment from 'moment';
+
 
 export default class RegisterScreen extends Component {
 
@@ -49,7 +51,7 @@ export default class RegisterScreen extends Component {
 
   hesapNoOlustur = async () => {
 
-    return fetch('https://householdwebapi.azurewebsites.net/api/Musteri',
+    return fetch('https://householdapi.azurewebsites.net/api/Musteri',
       {
         method: 'GET',
         headers: {
@@ -90,48 +92,39 @@ export default class RegisterScreen extends Component {
   };
 
   hesapOlustur = async () => {
-
-    return fetch('https://householdwebapi.azurewebsites.net/api/Musteri',
+    return fetch('https://householdapi.azurewebsites.net/api/Hesap',
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Accept-Charset': 'UTF-8',
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          'hesapEkNo': '5001',
+          'musTCKN': this.state.tckn,
+          'aktifmi': 1,
+          'acilisTarihi': moment().format("YYYY-MM-DD"),
+          'bakiye': 0
+        })
       })
 
       .then((response) => response.json())
       .then((responseData) => {
         var result = responseData['Result'];
         if (result == "1") {
-          var essiz = false;
-          var hesapNo;
-          do {
-            hesapNo = Math.floor(Math.random() * ((999999999 - 100000000) + 1) + 100000000);
-            var hspNo = hesapNo.toString();
-
-            for (key in responseData) {
-              if (((typeof key) == 'hesapNo') && key == hspNo) {
-                break;
-              }
-              essiz = true;
-            }
-          } while (!essiz);
-
-          var essizHesapNo = hesapNo.toString();
-          //alert('essizHesapNo: ' + essizHesapNo);
-          return essizHesapNo;
-        }
-        else {
-          alert("API ile bağlantı kurulamadı!");
+          return true;
+        } else {
+          alert("HesapOluştur: API ile bağlantı kurulamadı!");
+          return false;
         }
       })
       .catch((error) => {
         alert("Hata: " + error);
+        return false;
       })
   };
-
-  goRegister = async () => {
+  
+  kayitOl = async () => {
     const tcknError = tcknValidator(this.state.tckn);
     const adsoyadError = adsoyadValidator(this.state.adsoyad);
     const passwordError = passValidator(this.state.pass);
@@ -141,7 +134,6 @@ export default class RegisterScreen extends Component {
     const dogumtarihError = dogumtarihValidator(this.state.dogumtarih);
     const adresError = adresValidator(this.state.adres);
 
-    //var hesapNo = this.hesapNoOlustur();
     if (tcknError || adsoyadError || passwordError || confirmPasswordError || emailError || telError || dogumtarihError || adresError) {
       this.setState({
         tcknError,
@@ -158,11 +150,12 @@ export default class RegisterScreen extends Component {
 
 
     const hesapNo = await this.hesapNoOlustur();
-    //alert(hesapNo);
+    const sonuc = await this.hesapOlustur();
+    //alert(sonuc);
 
     this.setState({ loading: true });
 
-    fetch('https://householdwebapi.azurewebsites.net/api/Musteri',
+    fetch('https://householdapi.azurewebsites.net/api/Musteri',
       {
         method: 'POST',
         headers: {
@@ -184,8 +177,7 @@ export default class RegisterScreen extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         var result = responseData['Result'];
-        if (result == "1") {
-          //const sonuc = await this.hesapOlustur();
+        if (result == "1" && sonuc == true) {
           this.setState({ loading: false });
           alert('Kayıt Yapıldı!');
           this.props.navigation.navigate('LoginScreen');
@@ -196,7 +188,8 @@ export default class RegisterScreen extends Component {
         }
       })
       .catch((error) => {
-        alert(error);
+        this.setState({ loading: false });
+        alert('KayıtOl:Hata: ' + error);
       })
 
 
@@ -243,7 +236,7 @@ export default class RegisterScreen extends Component {
           <TextInput secureTextEntry={true}
             label="Şifre"
             onChangeText={(pass) => {
-              this.setState({ pass, passwordError: '' });
+              this.setState({ pass, passwordError: '', confirmPasswordError: '' });
               if (pass.length === 8 && this.state.confirmPass !== '' && this.state.confirmPass.length === 8) {
                 if (this.state.confirmPass !== pass) {
                   this.setState({ passwordError: 'Şifreler Farklı!' });
@@ -264,7 +257,7 @@ export default class RegisterScreen extends Component {
           <TextInput secureTextEntry={true}
             label="Şifre Tekrar"
             onChangeText={(confirmPass) => {
-              this.setState({ confirmPass , confirmPasswordError: '' });
+              this.setState({ confirmPass, confirmPasswordError: '', passwordError: '' });
               if (confirmPass.length === 8) {
                 if (this.state.pass !== confirmPass) {
                   this.setState({ confirmPasswordError: 'Şifreler Farklı!' });
@@ -347,7 +340,7 @@ export default class RegisterScreen extends Component {
 
           />
 
-          <Button mode="contained" onPress={this.goRegister.bind(this)}>
+          <Button mode="contained" onPress={this.kayitOl.bind(this)}>
             Kayıt Ol
           </Button>
 

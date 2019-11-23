@@ -36,7 +36,7 @@ export default class AccountDetail extends Component {
 
     let secilenHesap = this.props.navigation.state.params.selectedAcc;
 
-    fetch('https://householdwebapi.azurewebsites.net/api/Islem/getTransaction?hesapNo=' + musteri.hesapNo + '&hesapEkNo=' + secilenHesap.hesapEkNo,
+    fetch('https://householdapi.azurewebsites.net/api/Islem/getTransaction?hesapNo=' + musteri.hesapNo + '&hesapEkNo=' + secilenHesap.hesapEkNo,
       {
         method: 'GET',
         headers: {

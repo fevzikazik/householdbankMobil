@@ -33,7 +33,7 @@ export default class Accounts extends Component {
 
     let tcKimlikNo = Customer.tcKimlikNo;
 
-    fetch('https://householdwebapi.azurewebsites.net/api/Hesap/' + tcKimlikNo,
+    fetch('https://householdapi.azurewebsites.net/api/Hesap/' + tcKimlikNo,
       {
         method: 'GET',
         headers: {

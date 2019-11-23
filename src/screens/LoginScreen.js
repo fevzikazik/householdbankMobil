@@ -45,7 +45,7 @@ export default class LoginScreen extends Component {
     var pass = this.state.pass;
     //alert(tckn + " " + pass);
 
-    fetch('https://householdwebapi.azurewebsites.net/api/Musteri/' + tckn,
+    fetch('https://householdapi.azurewebsites.net/api/Musteri/' + tckn,
       {
         method: 'GET',
         headers: {
