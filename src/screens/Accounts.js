@@ -7,20 +7,23 @@ import Header from '../components/Header';
 import { theme } from '../core/theme';
 import Button from '../components/Button';
 import { drawer } from "./Dashboard";
+import moment from 'moment';
+import Loader from '../core/loader';
 
 export default class Accounts extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      loading: false,
       accs: []
     };
-    
+
     //alert('accs: ' + JSON.stringify(this.props));
   };
 
   componentDidMount = () => {
-    this.GetAccounts();
+    this.HesaplariGetir();
   };
 
   static navigationOptions = {
@@ -28,7 +31,49 @@ export default class Accounts extends Component {
     headerLeft: <Icon name="menu" size={35} onPress={() => drawer.current.open()} />
   };
 
-  GetAccounts = () => {
+  hesapOlustur = async () => {
+    const { accs } = this.state;
+    var max = accs[0]['hesapEkNo'];
+    for (var i = 0; i < accs.length; i++) {
+      if (max == null || parseInt(accs[i]['hesapEkNo']) > parseInt(max))
+        max = accs[i]['hesapEkNo'];
+    }
+    var yeniHesapEkNo = parseInt(max) + 1;
+    //alert(yeniHesapEkNo);
+    this.setState({ loading: true });
+    return fetch('https://householdapi.azurewebsites.net/api/Hesap',
+      {
+        method: 'POST',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'hesapEkNo': yeniHesapEkNo,
+          'musTCKN': this.props.screenProps.musteri.tcKimlikNo,
+          'aktifmi': 1,
+          'acilisTarihi': moment().format("YYYY-MM-DD"),
+          'bakiye': 0
+        })
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var result = responseData['Result'];
+        if (result == "1") {
+          this.HesaplariGetir();
+          this.setState({ loading: false });
+        } else {
+          this.setState({ loading: false });
+          alert("HesapOluştur: API ile bağlantı kurulamadı!");
+        }
+      })
+      .catch((error) => {
+        alert("Hata: " + error);
+      })
+  };
+
+  HesaplariGetir = () => {
     let Customer = this.props.screenProps.musteri;
 
     let tcKimlikNo = Customer.tcKimlikNo;
@@ -59,10 +104,12 @@ export default class Accounts extends Component {
     return (
       <ScrollView>
         <Background>
+        <Loader
+          loading={this.state.loading} />
 
           <Header>Yeni Hesap Aç</Header>
 
-          <Button mode="contained" onPress={() => pass} style={styles.button}>
+          <Button mode="contained" onPress={this.hesapOlustur.bind(this)} style={styles.button}>
             Hesap Aç
         </Button>
 
