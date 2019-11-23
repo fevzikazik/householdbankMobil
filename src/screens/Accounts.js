@@ -52,7 +52,7 @@ export default class Accounts extends Component {
           'hesapEkNo': yeniHesapEkNo,
           'musTCKN': this.props.screenProps.musteri.tcKimlikNo,
           'aktifmi': 1,
-          'acilisTarihi': moment().format("YYYY-MM-DD"),
+          'acilisTarihi': moment().format("YYYY-MM-DD HH:mm:ss"),
           'bakiye': 0
         })
       })

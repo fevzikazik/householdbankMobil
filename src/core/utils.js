@@ -38,7 +38,7 @@ export const dogumtarihValidator = dg => {
 };
 
 export const adresValidator = adres => {
-  if (!adres || adres.length <= 10) return 'Adres girin.(Min 10 Karakter)';
+  if (!adres || adres.length < 10) return 'Adres girin.(Min 10 Karakter)';
 
   return '';
 };

@@ -103,7 +103,7 @@ export default class RegisterScreen extends Component {
           'hesapEkNo': '5001',
           'musTCKN': this.state.tckn,
           'aktifmi': 1,
-          'acilisTarihi': moment().format("YYYY-MM-DD"),
+          'acilisTarihi': moment().format("YYYY-MM-DD HH:mm:ss"),
           'bakiye': 0
         })
       })
