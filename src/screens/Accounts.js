@@ -69,6 +69,7 @@ export default class Accounts extends Component {
         }
       })
       .catch((error) => {
+        this.setState({ loading: false });
         alert("Hata: " + error);
       })
   };
