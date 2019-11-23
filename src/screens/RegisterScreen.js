@@ -123,9 +123,15 @@ export default class RegisterScreen extends Component {
         return false;
       })
   };
-  
+
   kayitOl = async () => {
-    const tcknError = tcknValidator(this.state.tckn);
+    var tcknError;
+    if (this.state.tcknError!=='') {
+      tcknError = this.state.tcknError;
+    }
+    else{
+      tcknError = tcknValidator(this.state.tckn);
+    }
     const adsoyadError = adsoyadValidator(this.state.adsoyad);
     const passwordError = passValidator(this.state.pass);
     const confirmPasswordError = passValidator(this.state.confirmPass);
@@ -195,6 +201,51 @@ export default class RegisterScreen extends Component {
 
   };
 
+  tcknKontrol = async (tckn) => {
+    if (tckn.length==11) {
+      this.setState({ tckn });
+      return fetch('https://householdapi.azurewebsites.net/api/Musteri',
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var result = responseData['Result'];
+        if (result == "1") {
+          var tcknvarmi = false;
+          var data = responseData['Data'];
+          for (var i = 0; i < data.length; i++) {
+            if (data[i]['tcKimlikNo'] === tckn) {
+              tcknvarmi = true;
+              break;
+            }
+          }
+
+          if (tcknvarmi == true) {
+            this.setState({ tcknError: 'Bu TCKN Daha önce Kayıtlı!' });
+          } else {
+            this.setState({ tcknError: '' });
+          }
+
+        } else {
+          alert("HesapOluştur: API ile bağlantı kurulamadı!");
+          return false;
+        }
+      })
+      .catch((error) => {
+        alert("Hata: " + error);
+        return false;
+      })
+    } else {
+      this.setState({ tckn, tcknError: '' });
+    }
+  };
+
   render() {
 
     return (
@@ -211,7 +262,7 @@ export default class RegisterScreen extends Component {
           <TextInput
             label="TCKN"
             onChangeText={(tckn) => {
-              this.setState({ tckn, tcknError: '' });
+              this.tcknKontrol(tckn);
             }}
             value={this.state.tckn}
             error={!!this.state.tcknError}
