@@ -335,7 +335,7 @@ export default class RegisterScreen extends Component {
             error={!!this.state.telError}
             errorText={this.state.telError}
             maxLength={11}
-
+            keyboardType={'numeric'}
           />
 
           <TextInput
