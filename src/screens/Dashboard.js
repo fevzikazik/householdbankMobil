@@ -81,7 +81,7 @@ export default class Dashboard extends Component {
   };
 
   guncelMusteriBilgisi = async () => {
-    return fetch('https://householdapi.azurewebsites.net/api/Musteri/' + this.props.navigation.state.params.musteri.tcKimlikNo,
+    return fetch('https://householdapi.azurewebsites.net/api/Musteri/Get/' + this.props.navigation.state.params.musteri.tcKimlikNo,
       {
         method: 'GET',
         headers: {

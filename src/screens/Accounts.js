@@ -41,7 +41,7 @@ export default class Accounts extends Component {
     var yeniHesapEkNo = parseInt(max) + 1;
     //alert(yeniHesapEkNo);
     this.setState({ loading: true });
-    return fetch('https://householdapi.azurewebsites.net/api/Hesap',
+    return fetch('https://householdapi.azurewebsites.net/api/Hesap/Post',
       {
         method: 'POST',
         headers: {
@@ -79,7 +79,7 @@ export default class Accounts extends Component {
 
     let tcKimlikNo = Customer.tcKimlikNo;
 
-    fetch('https://householdapi.azurewebsites.net/api/Hesap/' + tcKimlikNo,
+    fetch('https://householdapi.azurewebsites.net/api/Hesap/getActiveAccounts/' + tcKimlikNo,
       {
         method: 'GET',
         headers: {

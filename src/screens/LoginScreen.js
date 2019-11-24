@@ -45,7 +45,7 @@ export default class LoginScreen extends Component {
     var pass = this.state.pass;
     //alert(tckn + " " + pass);
 
-    fetch('https://householdapi.azurewebsites.net/api/Musteri/' + tckn,
+    fetch('https://householdapi.azurewebsites.net/api/Musteri/Get/' + tckn,
       {
         method: 'GET',
         headers: {
@@ -101,6 +101,7 @@ export default class LoginScreen extends Component {
         <TextInput
           label="TCKN"
           onChangeText={(tckn) => {
+            tckn = tckn.replace(/[0]*/, '').replace(/[^\d]*/g, '');
             this.setState({ tckn, tcknError: '' });
           }}
           value={this.state.tckn}

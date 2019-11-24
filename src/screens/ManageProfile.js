@@ -84,7 +84,7 @@ export default class ManageProfile extends Component {
 
     this.setState({ loading: true });
 
-    fetch('https://householdapi.azurewebsites.net/api/Musteri/' + this.state.tckn,
+    fetch('https://householdapi.azurewebsites.net/api/Musteri/Put/' + this.state.tckn,
       {
         method: 'PUT',
         headers: {

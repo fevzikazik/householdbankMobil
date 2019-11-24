@@ -51,7 +51,7 @@ export default class RegisterScreen extends Component {
 
   hesapNoOlustur = async () => {
 
-    return fetch('https://householdapi.azurewebsites.net/api/Musteri',
+    return fetch('https://householdapi.azurewebsites.net/api/Musteri/Get',
       {
         method: 'GET',
         headers: {
@@ -92,7 +92,7 @@ export default class RegisterScreen extends Component {
   };
 
   hesapOlustur = async () => {
-    return fetch('https://householdapi.azurewebsites.net/api/Hesap',
+    return fetch('https://householdapi.azurewebsites.net/api/Hesap/Post',
       {
         method: 'POST',
         headers: {
@@ -161,7 +161,7 @@ export default class RegisterScreen extends Component {
 
     this.setState({ loading: true });
 
-    fetch('https://householdapi.azurewebsites.net/api/Musteri',
+    fetch('https://householdapi.azurewebsites.net/api/Musteri/Post',
       {
         method: 'POST',
         headers: {
@@ -204,7 +204,7 @@ export default class RegisterScreen extends Component {
   tcknKontrol = async (tckn) => {
     if (tckn.length == 11) {
       this.setState({ tckn });
-      return fetch('https://householdapi.azurewebsites.net/api/Musteri',
+      return fetch('https://householdapi.azurewebsites.net/api/Musteri/Get',
         {
           method: 'GET',
           headers: {
