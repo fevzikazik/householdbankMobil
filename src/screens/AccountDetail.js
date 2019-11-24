@@ -7,12 +7,16 @@ import { theme } from '../core/theme';
 import Button from '../components/Button';
 import { drawer } from "./Dashboard";
 import { Paragraph } from 'react-native-paper';
+import moment from 'moment';
+import Loader from '../core/loader';
+import NavigationService from './NavigationService';
 
 export default class AccountDetail extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      loading: false,
       transactionList: [],
       selectedAcc: this.props.navigation.state.params.selectedAcc,
       musteri: this.props.screenProps.musteri
@@ -68,10 +72,61 @@ export default class AccountDetail extends Component {
       })
   }
 
+  hesapKapat = () => {
+    this.setState({ loading: true });
+
+    fetch('https://householdapi.azurewebsites.net/api/Hesap/Put/' + this.state.selectedAcc.hesapEkNo,
+      {
+        method: 'PUT',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'hesapID': this.state.selectedAcc.hesapID,
+          'hesapEkNo': this.state.selectedAcc.hesapEkNo,
+          'musTCKN': this.state.selectedAcc.musTCKN,
+          'aktifmi': 0,
+          'acilisTarihi': this.state.selectedAcc.acilisTarihi,
+          'kapanisTarihi': moment().format("YYYY-MM-DD HH:mm:ss"),
+          'bakiye': 0
+        })
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var result = responseData['Result'];
+        if (result == "1") {
+          this.setState({ loading: false });
+          alert('Hesap Kapatıldı!');
+        }
+        else {
+          this.setState({ loading: false });
+          alert('Hesap kapatılma sırasında Hata Oluştu!');
+        }
+      })
+      .catch((error) => {
+        this.setState({ loading: false });
+        alert('HesapKapatma:Hata: ' + error);
+      })
+  };
+
+
+  kontrolBakiye = () => {
+    if (this.state.selectedAcc.bakiye > 0) {
+      return <Button mode="contained" onPress={() => console.log('PARAÇEK!')} style={styles.button}> Para Çek </Button>
+    }
+    else {
+      return <Button mode="contained" onPress={this.hesapKapat.bind(this)} style={styles.button}> Hesabı Kapat </Button>
+    }
+  }
+
   render() {
     return (
       <ScrollView>
         <Background>
+        <Loader
+          loading={this.state.loading} />
 
           <Header>Hesap Detayları:</Header>
           <Paragraph>{this.state.musteri.hesapNo} : {this.state.selectedAcc.hesapEkNo}</Paragraph>
@@ -80,13 +135,11 @@ export default class AccountDetail extends Component {
 
           <Button mode="contained" onPress={() => pass} style={styles.button}>
             Para Yatır
-        </Button>
-          <Button mode="contained" onPress={() => pass} style={styles.button}>
-            Para Çek
-        </Button>
-          <Button mode="contained" onPress={() => pass} style={styles.button}>
+          </Button>
+          {this.kontrolBakiye()}
+          <Button mode="contained" onPress={() => NavigationService.navigate('Accounts') } style={styles.button}>
             Hesaplarıma Geri Dön
-        </Button>
+          </Button>
 
           <Header>Hesap Hareketleri:</Header>
           <FlatList
