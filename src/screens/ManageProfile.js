@@ -18,6 +18,7 @@ import {
 import Loader from '../core/loader';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
+import { drawer } from "./Dashboard";
 
 export default class ManageProfile extends Component {
   constructor(props) {
@@ -46,9 +47,6 @@ export default class ManageProfile extends Component {
     //alert('ManageProfile: ' + JSON.stringify(this.props));
   };
 
-  componentDidMount = () => {
-  };
-
   static navigationOptions = {
     title: 'Profil',
     headerLeft: <Icon name="menu" size={35} onPress={() => drawer.current.open()} />
@@ -56,10 +54,10 @@ export default class ManageProfile extends Component {
 
   bilgileriGuncelle = async () => {
     var tcknError;
-    if (this.state.tcknError!=='') {
+    if (this.state.tcknError !== '') {
       tcknError = this.state.tcknError;
     }
-    else{
+    else {
       tcknError = tcknValidator(this.state.tckn);
     }
     const adsoyadError = adsoyadValidator(this.state.adsoyad);
@@ -84,16 +82,11 @@ export default class ManageProfile extends Component {
       return;
     }
 
-
-    const hesapNo = await this.hesapNoOlustur();
-    const sonuc = await this.hesapOlustur();
-    //alert(sonuc);
-
     this.setState({ loading: true });
 
-    fetch('https://householdapi.azurewebsites.net/api/Musteri',
+    fetch('https://householdapi.azurewebsites.net/api/Musteri/' + this.state.tckn,
       {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Accept-Charset': 'UTF-8',
           'Content-Type': 'application/json'
@@ -106,39 +99,27 @@ export default class ManageProfile extends Component {
           'dogumTarihi': this.state.dogumtarih,
           'telefon': this.state.tel,
           'adres': this.state.adres,
-          'hesapNo': hesapNo
+          'hesapNo': this.props.screenProps.musteri.hesapNo
         })
       })
 
       .then((response) => response.json())
       .then((responseData) => {
         var result = responseData['Result'];
-        if (result == "1" && sonuc == true) {
+        if (result == "1") {
           this.setState({ loading: false });
-          alert('Kayıt Yapıldı!');
-          this.props.navigation.navigate('LoginScreen');
+          alert('Güncelleme Başarılı!');
         }
         else {
           this.setState({ loading: false });
-          alert('Kayıt Olurken Hata Oluştu!');
+          alert('Güncelleme sırasında Hata Oluştu!');
         }
       })
       .catch((error) => {
         this.setState({ loading: false });
-        alert('KayıtOl:Hata: ' + error);
+        alert('Güncelleme:Hata: ' + error);
       })
-
-
   };
-
-  render() {
-    return (
-      <Background>
-
-        <Header>Profil Ayarları</Header>
-      </Background>
-    )
-  }
 
   render() {
 
@@ -154,9 +135,6 @@ export default class ManageProfile extends Component {
 
           <TextInput
             label="TCKN"
-            onChangeText={(tckn) => {
-              this.tcknKontrol(tckn);
-            }}
             value={this.state.tckn}
             error={!!this.state.tcknError}
             errorText={this.state.tcknError}
@@ -284,7 +262,7 @@ export default class ManageProfile extends Component {
 
           />
 
-          <Button mode="contained">
+          <Button mode="contained" onPress={this.bilgileriGuncelle.bind(this)}>
             Güncelle
           </Button>
         </Background>

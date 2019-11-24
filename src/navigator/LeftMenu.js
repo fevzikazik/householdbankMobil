@@ -22,43 +22,43 @@ export default class LeftMenu extends Component {
       <BgDashBoard>
         <Profil />
 
-        <Header>Profilim</Header>
+        <Header>Hoşgeldiniz, {this.props.musteri.tamAdi}</Header>
 
         <Button mode="contained" onPress={() => {
-          NavigationService.navigate('ManageProfile');
           this.props.drawer.current.close();
+          NavigationService.navigate('ManageProfile');
         }}>
-          Yönet
+          Profili Düzenle
     </Button>
-        <Header>Menü</Header>
+        <Header>İşlem Menüsü</Header>
 
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('Accounts');
           this.props.drawer.current.close();
+          NavigationService.navigate('Accounts');
         }}>
           Hesaplarım
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('Transfer');
           this.props.drawer.current.close();
+          NavigationService.navigate('Transfer');
         }}>
           Havale Yap
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('TransferSelf');
           this.props.drawer.current.close();
+          NavigationService.navigate('TransferSelf');
         }}>
           Virman Yap
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('HGS');
           this.props.drawer.current.close();
+          NavigationService.navigate('HGS');
         }}>
           HGS
     </Button>
         <Button mode="outlined" onPress={() => {
-          NavigationService.navigate('CreditPrediction');
           this.props.drawer.current.close();
+          NavigationService.navigate('CreditPrediction');
         }}>
           Kredi Tahmini
     </Button>
