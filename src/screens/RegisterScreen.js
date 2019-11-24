@@ -126,10 +126,10 @@ export default class RegisterScreen extends Component {
 
   kayitOl = async () => {
     var tcknError;
-    if (this.state.tcknError!=='') {
+    if (this.state.tcknError !== '') {
       tcknError = this.state.tcknError;
     }
-    else{
+    else {
       tcknError = tcknValidator(this.state.tckn);
     }
     const adsoyadError = adsoyadValidator(this.state.adsoyad);
@@ -202,49 +202,50 @@ export default class RegisterScreen extends Component {
   };
 
   tcknKontrol = async (tckn) => {
-    if (tckn.length==11) {
+    if (tckn.length == 11) {
       this.setState({ tckn });
       return fetch('https://householdapi.azurewebsites.net/api/Musteri',
-      {
-        method: 'GET',
-        headers: {
-          'Accept-Charset': 'UTF-8',
-          'Content-Type': 'application/json'
-        }
-      })
+        {
+          method: 'GET',
+          headers: {
+            'Accept-Charset': 'UTF-8',
+            'Content-Type': 'application/json'
+          }
+        })
 
-      .then((response) => response.json())
-      .then((responseData) => {
-        var result = responseData['Result'];
-        if (result == "1") {
-          var tcknvarmi = false;
-          var data = responseData['Data'];
-          for (var i = 0; i < data.length; i++) {
-            if (data[i]['tcKimlikNo'] === tckn) {
-              tcknvarmi = true;
-              break;
+        .then((response) => response.json())
+        .then((responseData) => {
+          var result = responseData['Result'];
+          if (result == "1") {
+            var tcknvarmi = false;
+            var data = responseData['Data'];
+            for (var i = 0; i < data.length; i++) {
+              if (data[i]['tcKimlikNo'] === tckn) {
+                tcknvarmi = true;
+                break;
+              }
             }
-          }
 
-          if (tcknvarmi == true) {
-            this.setState({ tcknError: 'Bu TCKN Daha önce Kayıtlı!' });
+            if (tcknvarmi == true) {
+              this.setState({ tcknError: 'Bu TCKN Daha önce Kayıtlı!' });
+            } else {
+              this.setState({ tcknError: '' });
+            }
+
           } else {
-            this.setState({ tcknError: '' });
+            alert("HesapOluştur: API ile bağlantı kurulamadı!");
+            return false;
           }
-
-        } else {
-          alert("HesapOluştur: API ile bağlantı kurulamadı!");
+        })
+        .catch((error) => {
+          alert("Hata: " + error);
           return false;
-        }
-      })
-      .catch((error) => {
-        alert("Hata: " + error);
-        return false;
-      })
+        })
     } else {
       this.setState({ tckn, tcknError: '' });
     }
   };
+
 
   render() {
 
@@ -262,7 +263,8 @@ export default class RegisterScreen extends Component {
           <TextInput
             label="TCKN"
             onChangeText={(tckn) => {
-              this.tcknKontrol(tckn);
+              text = tckn.replace(/[0]*/, '').replace(/[^\d]*/g, '');
+              this.tcknKontrol(text);
             }}
             value={this.state.tckn}
             error={!!this.state.tcknError}
@@ -275,6 +277,7 @@ export default class RegisterScreen extends Component {
           <TextInput
             label="Ad Soyad"
             onChangeText={(adsoyad) => {
+              adsoyad = adsoyad.replace(/[ ]*/, '').replace(/[^a-zA-ZığüçşöİĞÜÇŞÖ ]*/g, '')
               this.setState({ adsoyad, adsoyadError: '' });
             }}
             value={this.state.adsoyad}
@@ -329,6 +332,7 @@ export default class RegisterScreen extends Component {
           <TextInput
             label="Telefon"
             onChangeText={(tel) => {
+              tel = tel.replace(/^[^0]*/, '').replace(/[^\d]*/g, '');
               this.setState({ tel, telError: '' });
             }}
             value={this.state.tel}
@@ -382,6 +386,7 @@ export default class RegisterScreen extends Component {
           <TextInput
             label="Adres"
             onChangeText={(adres) => {
+              adres = adres.replace(/[ ]*/, '').replace(/[^[0-9]a-zA-ZığüçşöİĞÜÇŞÖ.:\/ ]*/g, '');
               this.setState({ adres, adresError: '' });
             }}
             value={this.state.adres}

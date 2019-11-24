@@ -146,6 +146,7 @@ export default class ManageProfile extends Component {
           <TextInput
             label="Ad Soyad"
             onChangeText={(adsoyad) => {
+              adsoyad = adsoyad.replace(/[ ]*/, '').replace(/[^a-zA-ZığüçşöİĞÜÇŞÖ ]*/g, '')
               this.setState({ adsoyad, adsoyadError: '' });
             }}
             value={this.state.adsoyad}
@@ -155,7 +156,7 @@ export default class ManageProfile extends Component {
 
           />
 
-          <TextInput
+          <TextInput secureTextEntry={true}
             label="Şifre"
             onChangeText={(pass) => {
               this.setState({ pass, passwordError: '', confirmPasswordError: '' });
@@ -176,7 +177,7 @@ export default class ManageProfile extends Component {
             keyboardType={'numeric'}
           />
 
-          <TextInput
+          <TextInput secureTextEntry={true}
             label="Şifre Tekrar"
             onChangeText={(confirmPass) => {
               this.setState({ confirmPass, confirmPasswordError: '', passwordError: '' });
@@ -200,6 +201,7 @@ export default class ManageProfile extends Component {
           <TextInput
             label="Telefon"
             onChangeText={(tel) => {
+              tel = tel.replace(/^[^0]*/, '').replace(/[^\d]*/g, '');
               this.setState({ tel, telError: '' });
             }}
             value={this.state.tel}
@@ -253,6 +255,7 @@ export default class ManageProfile extends Component {
           <TextInput
             label="Adres"
             onChangeText={(adres) => {
+              adres = adres.replace(/[ ]*/, '').replace(/[^[0-9]a-zA-ZığüçşöİĞÜÇŞÖ.:\/ ]*/g, '');
               this.setState({ adres, adresError: '' });
             }}
             value={this.state.adres}
