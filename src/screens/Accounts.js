@@ -16,14 +16,16 @@ export default class Accounts extends Component {
 
     this.state = {
       loading: false,
-      accs: []
+      accs: [],
+      allAccs: []
     };
 
     //alert('accs: ' + JSON.stringify(this.props));
   };
 
   componentDidMount = () => {
-    this.HesaplariGetir();
+    this.aktifHesaplariGetir();
+    this.tumHesaplariGetir();
   };
 
   static navigationOptions = {
@@ -31,12 +33,12 @@ export default class Accounts extends Component {
     headerLeft: <Icon name="menu" size={35} onPress={() => drawer.current.open()} />
   };
 
-  hesapOlustur = async () => {
-    const { accs } = this.state;
-    var max = accs[0]['hesapEkNo'];
-    for (var i = 0; i < accs.length; i++) {
-      if (max == null || parseInt(accs[i]['hesapEkNo']) > parseInt(max))
-        max = accs[i]['hesapEkNo'];
+  hesapOlustur = () => {
+    const { allAccs } = this.state;
+    var max = allAccs[0]['hesapEkNo'];
+    for (var i = 0; i < allAccs.length; i++) {
+      if (max == null || parseInt(allAccs[i]['hesapEkNo']) > parseInt(max))
+        max = allAccs[i]['hesapEkNo'];
     }
     var yeniHesapEkNo = parseInt(max) + 1;
     //alert(yeniHesapEkNo);
@@ -61,7 +63,8 @@ export default class Accounts extends Component {
       .then((responseData) => {
         var result = responseData['Result'];
         if (result == "1") {
-          this.HesaplariGetir();
+          this.aktifHesaplariGetir();
+          this.tumHesaplariGetir();
           this.setState({ loading: false });
         } else {
           this.setState({ loading: false });
@@ -74,7 +77,31 @@ export default class Accounts extends Component {
       })
   };
 
-  HesaplariGetir = () => {
+  tumHesaplariGetir = () => {
+    
+    fetch('https://householdapi.azurewebsites.net/api/Hesap/Get/' + this.props.screenProps.musteri.tcKimlikNo,
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var accListCount = responseData['Data'].length;
+        //alert(accListCount);
+        var accList = responseData['Data'];
+        this.setState({ allAccs: accList });
+        //alert(accList);
+      })
+      .catch((error) => {
+        alert(error);
+      })
+  }
+
+  aktifHesaplariGetir = () => {
     let Customer = this.props.screenProps.musteri;
 
     let tcKimlikNo = Customer.tcKimlikNo;
