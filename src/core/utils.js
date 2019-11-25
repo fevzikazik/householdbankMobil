@@ -42,3 +42,15 @@ export const adresValidator = adres => {
 
   return '';
 };
+
+export const miktarValidator = miktar => {
+  if (!miktar) return 'Lütfen miktar girin.';
+
+  return '';
+};
+
+export const aciklamaValidator = aciklama => {
+  if (!aciklama) return 'Lütfen Açıklama Girin.';
+
+  return '';
+};

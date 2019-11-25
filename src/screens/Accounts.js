@@ -78,7 +78,7 @@ export default class Accounts extends Component {
   };
 
   tumHesaplariGetir = () => {
-    
+
     fetch('https://householdapi.azurewebsites.net/api/Hesap/Get/' + this.props.screenProps.musteri.tcKimlikNo,
       {
         method: 'GET',
@@ -127,13 +127,18 @@ export default class Accounts extends Component {
         alert(error);
       })
   }
+  
+  refreshProps = () => {
+    this.aktifHesaplariGetir();
+    this.tumHesaplariGetir();
+  }
 
   render() {
     return (
       <ScrollView>
         <Background>
-        <Loader
-          loading={this.state.loading} />
+          <Loader
+            loading={this.state.loading} />
 
           <Header>Yeni Hesap Aç</Header>
 
@@ -148,7 +153,7 @@ export default class Accounts extends Component {
             renderItem={({ item }) => (
               <ListItem
                 topDivider
-                onPress={() => this.props.navigation.navigate('AccountDetail', { selectedAcc: item })}
+                onPress={() => this.props.navigation.navigate('AccountDetail', { selectedAcc: item, refreshProps: this.refreshProps.bind(this) })}
                 title={item.hesapEkNo}
                 subtitle={'Bakiye: ' + item.bakiye + ' TL'}
                 rightAvatar={{

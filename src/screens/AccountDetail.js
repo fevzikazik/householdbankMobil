@@ -9,7 +9,6 @@ import { drawer } from "./Dashboard";
 import { Paragraph } from 'react-native-paper';
 import moment from 'moment';
 import Loader from '../core/loader';
-import NavigationService from './NavigationService';
 
 export default class AccountDetail extends Component {
   constructor(props) {
@@ -25,6 +24,11 @@ export default class AccountDetail extends Component {
     //alert('accsD: ' + JSON.stringify(this.props));
   };
 
+  componentWillUnmount() {
+    const { navigation } = this.props
+    navigation.state.params.refreshProps();
+  }
+
   componentDidMount = () => {
     this.GetTransactions();
   };
@@ -34,10 +38,30 @@ export default class AccountDetail extends Component {
     headerLeft: <Icon name="menu" size={35} onPress={() => drawer.current.open()} />
   };
 
+  updateAccountDetails = () => {
+    let musteri = this.props.screenProps.musteri;
+    let secilenHesap = this.props.navigation.state.params.selectedAcc;
+    fetch('https://householdapi.azurewebsites.net/api/Hesap/getAccountBy?musTCKN=' + musteri.tcKimlikNo + '&hesapEkNo=' + secilenHesap.hesapEkNo,
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        var acc = responseData['Data'][0];
+        this.setState({ selectedAcc: acc });
+      })
+      .catch((error) => {
+        alert(error);
+      })
+  }
+
   GetTransactions = () => {
     let musteri = this.props.screenProps.musteri;
-    let tcKimlikNo = musteri.tcKimlikNo;
-
     let secilenHesap = this.props.navigation.state.params.selectedAcc;
 
     fetch('https://householdapi.azurewebsites.net/api/Islem/getTransaction?hesapNo=' + musteri.hesapNo + '&hesapEkNo=' + secilenHesap.hesapEkNo,
@@ -98,6 +122,7 @@ export default class AccountDetail extends Component {
         var result = responseData['Result'];
         if (result == "1") {
           this.setState({ loading: false });
+          this.props.navigation.goBack();
           alert('Hesap Kapatıldı!');
         }
         else {
@@ -114,11 +139,20 @@ export default class AccountDetail extends Component {
 
   kontrolBakiye = () => {
     if (this.state.selectedAcc.bakiye > 0) {
-      return <Button mode="contained" onPress={() => console.log('PARAÇEK!')} style={styles.button}> Para Çek </Button>
+      return <Button mode="contained" 
+      onPress={() => this.props.navigation.navigate('WithdrawMoney', { selectedAcc: this.state.selectedAcc, onBack: this.onBack.bind(this) })} 
+      style={styles.button}> Para Çek </Button>
     }
     else {
       return <Button mode="contained" onPress={this.hesapKapat.bind(this)} style={styles.button}> Hesabı Kapat </Button>
     }
+  }
+
+  onBack = () => {
+    const { navigation } = this.props
+    navigation.state.params.refreshProps();
+    this.updateAccountDetails();
+    this.GetTransactions();
   }
 
   render() {
@@ -133,11 +167,13 @@ export default class AccountDetail extends Component {
           <Paragraph>Bakiye : {this.state.selectedAcc.bakiye} TL</Paragraph>
           <Paragraph>Açılış Tarihi: {this.state.selectedAcc.acilisTarihi}</Paragraph>
 
-          <Button mode="contained" onPress={() => pass} style={styles.button}>
+          <Button mode="contained" 
+          onPress={() => this.props.navigation.navigate('DepositMoney', { selectedAcc: this.state.selectedAcc, onBack: this.onBack.bind(this) })} 
+          style={styles.button}>
             Para Yatır
           </Button>
           {this.kontrolBakiye()}
-          <Button mode="contained" onPress={() => NavigationService.navigate('Accounts') } style={styles.button}>
+          <Button mode="contained" onPress={() => this.props.navigation.goBack() } style={styles.button}>
             Hesaplarıma Geri Dön
           </Button>
 

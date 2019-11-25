@@ -9,6 +9,8 @@ import NavigationService from '../navigator/NavigationService';
 import ManageProfile from './ManageProfile';
 import Accounts from './Accounts';
 import AccountDetail from './AccountDetail';
+import DepositMoney from './DepositMoney';
+import WithdrawMoney from './WithdrawMoney';
 import Transfer from './Transfer';
 import TransferSelf from './TransferSelf';
 import HGS from './HGS';
@@ -25,6 +27,12 @@ const AppStack = createStackNavigator({
   },
   AccountDetail: {
     screen: AccountDetail
+  },
+  DepositMoney: {
+    screen: DepositMoney
+  },
+  WithdrawMoney: {
+    screen: WithdrawMoney
   },
   Transfer: {
     screen: Transfer
