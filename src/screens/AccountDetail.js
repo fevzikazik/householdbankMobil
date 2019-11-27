@@ -18,7 +18,8 @@ export default class AccountDetail extends Component {
       loading: false,
       transactionList: [],
       selectedAcc: this.props.navigation.state.params.selectedAcc,
-      musteri: this.props.screenProps.musteri
+      musteri: this.props.screenProps.musteri,
+      aktifHesapSayisi: 0
     };
 
     //alert('accsD: ' + JSON.stringify(this.props));
@@ -31,6 +32,7 @@ export default class AccountDetail extends Component {
 
   componentDidMount = () => {
     this.GetTransactions();
+    this.aktifHesapSayisi();
   };
 
   static navigationOptions = {
@@ -96,7 +98,40 @@ export default class AccountDetail extends Component {
       })
   }
 
+  aktifHesapSayisi = () => {
+    let Customer = this.props.screenProps.musteri;
+
+    let tcKimlikNo = Customer.tcKimlikNo;
+
+    fetch('https://householdapi.azurewebsites.net/api/Hesap/getActiveAccounts/' + tcKimlikNo,
+      {
+        method: 'GET',
+        headers: {
+          'Accept-Charset': 'UTF-8',
+          'Content-Type': 'application/json'
+        }
+      })
+
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData['Data'] != null) {
+          this.setState({ aktifHesapSayisi: responseData['Data'].length });
+        }
+        else{
+          this.setState({ aktifHesapSayisi: 0 });
+        }
+      })
+      .catch((error) => {
+        alert(error);
+      })
+  }
+
   hesapKapat = () => {
+
+    if (this.state.aktifHesapSayisi == 1) {
+      alert('Son aktif hesabınızı kapatamazsınız!');
+      return;
+    }
     this.setState({ loading: true });
 
     fetch('https://householdapi.azurewebsites.net/api/Hesap/Put/' + this.state.selectedAcc.hesapEkNo,
@@ -120,18 +155,16 @@ export default class AccountDetail extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         var result = responseData['Result'];
+        this.setState({ loading: false });
         if (result == "1") {
-          this.setState({ loading: false });
           this.props.navigation.goBack();
           alert('Hesap Kapatıldı!');
         }
         else {
-          this.setState({ loading: false });
           alert('Hesap kapatılma sırasında Hata Oluştu!');
         }
       })
       .catch((error) => {
-        this.setState({ loading: false });
         alert('HesapKapatma:Hata: ' + error);
       })
   };
