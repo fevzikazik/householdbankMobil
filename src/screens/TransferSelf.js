@@ -50,7 +50,7 @@ export default class TransferSelf extends Component {
     this.gonderenHesapListGetir();
   };
 
-  gonderenHesapListGetir = () => {
+  gonderenHesapListGetir = async () => {
     let Customer = this.props.screenProps.musteri;
 
     let tcKimlikNo = Customer.tcKimlikNo;
@@ -85,7 +85,7 @@ export default class TransferSelf extends Component {
       })
   };
 
-  alanHesapListGetir = (gonderen) => {
+  alanHesapListGetir = async (gonderen) => {
     let Customer = this.props.screenProps.musteri;
 
     let tcKimlikNo = Customer.tcKimlikNo;
@@ -111,9 +111,7 @@ export default class TransferSelf extends Component {
               this.setState({ gonderenHesap: acc });
               continue;
             }
-            if (acc.bakiye > 0) {
-              haveMoneyAcc.push(acc);
-            }
+            haveMoneyAcc.push(acc);
           }
           this.setState({ alanList: haveMoneyAcc });
         } else {
@@ -126,7 +124,7 @@ export default class TransferSelf extends Component {
   };
 
   alanHesapBakiyeGetir = (alan) => {
-    var accList = this.state.gonderenList;
+    var accList = this.state.alanList;
     for (let acc of accList) {
       if (acc.hesapEkNo == alan) {
         this.setState({ alanHesapBakiye: acc.bakiye });
