@@ -54,3 +54,15 @@ export const aciklamaValidator = aciklama => {
 
   return '';
 };
+
+export const hesapNoValidator = text => {
+  if (!text || text.length < 9) return 'Lütfen 9 haneli geçerli hesapno girin.';
+
+  return '';
+};
+
+export const hesapEkNoValidator = text => {
+  if (!text || text.length < 4) return 'Lütfen 4 haneli geçerli hesapekno girin.';
+
+  return '';
+};
