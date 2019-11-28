@@ -256,7 +256,7 @@ export default class Transfer extends Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          'hesapNo': this.state.musteri.hesapNo,
+          'hesapNo': this.state.alanMus.hesapNo,
           'hesapEkNo': this.state.alanHesap.hesapEkNo,
           'aciklama': sonAciklama,
           'tarih': moment().format("YYYY-MM-DD HH:mm:ss"),
