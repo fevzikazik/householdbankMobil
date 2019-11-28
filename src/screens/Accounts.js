@@ -9,6 +9,9 @@ import Button from '../components/Button';
 import { drawer } from "./Dashboard";
 import moment from 'moment';
 import Loader from '../core/loader';
+import PTRView from 'react-native-pull-to-refresh';
+
+
 
 export default class Accounts extends Component {
   constructor(props) {
@@ -22,6 +25,12 @@ export default class Accounts extends Component {
 
     //alert('accs: ' + JSON.stringify(this.props));
   };
+
+  _refresh = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => { resolve(); this.refreshProps(); }, 2000)
+    });
+  }
 
   componentDidMount = () => {
     this.aktifHesaplariGetir();
@@ -127,7 +136,7 @@ export default class Accounts extends Component {
         alert(error);
       })
   }
-  
+
   refreshProps = () => {
     this.aktifHesaplariGetir();
     this.tumHesaplariGetir();
@@ -136,35 +145,37 @@ export default class Accounts extends Component {
   render() {
     return (
       <ScrollView>
-        <Background>
-          <Loader
-            loading={this.state.loading} />
+        <PTRView onRefresh={this._refresh}>
+          <Background>
+            <Loader
+              loading={this.state.loading} />
 
-          <Header>Yeni Hesap Aç</Header>
+            <Header>Yeni Hesap Aç</Header>
 
-          <Button mode="contained" onPress={this.hesapOlustur.bind(this)} style={styles.button}>
-            Hesap Aç
+            <Button mode="contained" onPress={this.hesapOlustur.bind(this)} style={styles.button}>
+              Hesap Aç
         </Button>
 
-          <Header>Hesaplarım:</Header>
-          <FlatList
-            style={{ minWidth: 300 }}
-            data={this.state.accs}
-            renderItem={({ item }) => (
-              <ListItem
-                topDivider
-                onPress={() => this.props.navigation.navigate('AccountDetail', { selectedAcc: item, refreshProps: this.refreshProps.bind(this) })}
-                title={item.hesapEkNo}
-                subtitle={'Bakiye: ' + item.bakiye + ' TL'}
-                rightAvatar={{
-                  source: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' && { uri: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' }
-                }}
-                bottomDivider
-              />
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </Background>
+            <Header>Hesaplarım:</Header>
+            <FlatList
+              style={{ minWidth: 300 }}
+              data={this.state.accs}
+              renderItem={({ item }) => (
+                <ListItem
+                  topDivider
+                  onPress={() => this.props.navigation.navigate('AccountDetail', { selectedAcc: item, refreshProps: this.refreshProps.bind(this) })}
+                  title={item.hesapEkNo}
+                  subtitle={'Bakiye: ' + item.bakiye + ' TL'}
+                  rightAvatar={{
+                    source: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' && { uri: 'https://cdn3.iconfinder.com/data/icons/basicsiconic/512/right-512.png' }
+                  }}
+                  bottomDivider
+                />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </Background>
+        </PTRView>
       </ScrollView>
     )
   }
