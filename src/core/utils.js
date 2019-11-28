@@ -66,3 +66,9 @@ export const hesapEkNoValidator = text => {
 
   return '';
 };
+
+export const plakaValidator = text => {
+  if (!text) return 'Plaka boş bırakılamaz.';
+
+  return '';
+};
