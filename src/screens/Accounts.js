@@ -28,7 +28,7 @@ export default class Accounts extends Component {
 
   _refresh = () => {
     return new Promise((resolve) => {
-      setTimeout(() => { resolve(); this.refreshProps(); }, 2000)
+      setTimeout(() => { resolve(); this.refreshProps(); }, 1000)
     });
   }
 

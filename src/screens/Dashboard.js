@@ -14,6 +14,9 @@ import WithdrawMoney from './WithdrawMoney';
 import Transfer from './Transfer';
 import TransferSelf from './TransferSelf';
 import HGS from './HGS';
+import HGSDetail from './HGSDetail';
+import DepositMoneyHGS from './DepositMoneyHGS';
+import WithdrawMoneyHGS from './WithdrawMoneyHGS';
 import CreditPrediction from './CreditPrediction';
 
 import LeftMenu from '../navigator/LeftMenu';
@@ -42,6 +45,15 @@ const AppStack = createStackNavigator({
   },
   HGS: {
     screen: HGS
+  },
+  HGSDetail: {
+    screen: HGSDetail
+  },
+  DepositMoneyHGS: {
+    screen: DepositMoneyHGS
+  },
+  WithdrawMoneyHGS: {
+    screen: WithdrawMoneyHGS
   },
   CreditPrediction: {
     screen: CreditPrediction

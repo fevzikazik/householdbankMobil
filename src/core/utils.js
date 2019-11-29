@@ -69,6 +69,7 @@ export const hesapEkNoValidator = text => {
 
 export const plakaValidator = text => {
   if (!text) return 'Plaka boş bırakılamaz.';
-
+  const re = /([0-9]{2}|[01]{2})([a-z|A-Z]{2,})([0-9]{2,})/;
+  if (!re.test(text)) return 'Geçerli bir plaka girin!';
   return '';
 };
