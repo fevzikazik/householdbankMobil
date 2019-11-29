@@ -73,3 +73,21 @@ export const plakaValidator = text => {
   if (!re.test(text)) return 'Geçerli bir plaka girin!';
   return '';
 };
+
+export const krediMiktarValidator = miktar => {
+  if (!miktar) return 'Lütfen kredi miktarı girin.';
+
+  return '';
+};
+
+export const yasValidator = yas => {
+  if (!yas) return 'Lütfen yaş girin.';
+
+  return '';
+};
+
+export const aldigiKrediSayisiValidator = sayisi => {
+  if (!sayisi) return 'Lütfen daha önce aldığınız kredi sayısını girin.';
+
+  return '';
+};
