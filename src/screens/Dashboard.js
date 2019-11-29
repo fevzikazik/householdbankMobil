@@ -18,6 +18,7 @@ import HGSDetail from './HGSDetail';
 import DepositMoneyHGS from './DepositMoneyHGS';
 import WithdrawMoneyHGS from './WithdrawMoneyHGS';
 import CreditPrediction from './CreditPrediction';
+import CreditPredictionResult from './CreditPredictionResult';
 
 import LeftMenu from '../navigator/LeftMenu';
 
@@ -57,6 +58,9 @@ const AppStack = createStackNavigator({
   },
   CreditPrediction: {
     screen: CreditPrediction
+  },
+  CreditPredictionResult: {
+    screen: CreditPredictionResult
   }
 },
   {

@@ -73,7 +73,8 @@ export default class CreditPrediction extends Component {
       .then((resp) => {
         this.setState({ loading: false });
         alert(JSON.stringify(resp));
-        //this.props.navigation.navigate('Dashboard', { krediSonuc: '' });
+        //var sonuc = resp;
+        //this.props.navigation.navigate('CreditPredictionResult', { krediSonuc: sonuc });
       })
       .catch((error) => {
         this.setState({ loading: false });
@@ -81,6 +82,25 @@ export default class CreditPrediction extends Component {
       })
 
 
+  };
+
+  test = () => {
+
+    var sonuc = [
+      {"Model":"LogisticRegression","Oran":"90.64"},
+      {"Model":"GradientBoosting","Oran":"94.02"},
+      {"Model":"NaiveBayes","Oran":"91.55"},
+      {"Model":"DecisionTree(NoParam)","Oran":"100.0"},
+      {"Model":"DecisionTree(GridSearch)","Oran":"54.55"},
+      {"Model":"RandomForest(GridSearch)","Oran":"76.95"},
+      {"Model":"RandomForest(2 Param)","Oran":"90.0"},
+      {"Model":"KNeighborsClassifier","Oran":"100.0"},
+      {"Model":"LinearDiscriminantAnalysis","Oran":"89.44"},
+      {"Model":"AdaBoostClassifier","Oran":"50.95"},
+      {"Model":"BaggingClassifier","Oran":"70.0"}
+    ];
+
+    this.props.navigation.navigate('CreditPredictionResult', { krediSonuc: sonuc });
   };
 
   evDurumuKontrol = (value) => {
@@ -171,7 +191,7 @@ export default class CreditPrediction extends Component {
           }
         />
 
-        <Button mode="contained" onPress={this.predict.bind(this)}>
+        <Button mode="contained" onPress={this.test.bind(this)}>
           Kredi Tahminle
       </Button>
       </Background>
