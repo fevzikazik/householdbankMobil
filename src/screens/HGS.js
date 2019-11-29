@@ -166,10 +166,10 @@ export default class HGS extends Component {
 
             <TextInput
               label="Plaka"
-              onChangeText={(yeniPlaka) => {
-                yeniPlaka = yeniPlaka.toUpperCase();
-                yeniPlaka = yeniPlaka.replace(/[ ]*/, '').replace(/[^a-zA-Z[0-9]]*/g, '');
-                this.setState({ yeniPlaka, yeniPlakaError: '' });
+              onChangeText={(text) => {
+                //yeniPlaka = yeniPlaka.toUpperCase();
+                text = text.toUpperCase().replace(/[ ]*/, '').replace(/[^a-zA-Z[0-9]]*/g, '');
+                this.setState({ yeniPlaka: text, yeniPlakaError: '' });
               }}
               value={this.state.yeniPlaka}
               error={!!this.state.yeniPlakaError}

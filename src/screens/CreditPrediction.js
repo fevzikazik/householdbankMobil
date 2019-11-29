@@ -53,7 +53,7 @@ export default class CreditPrediction extends Component {
 
     this.setState({ loading: true });
 
-    fetch('http://localhost:5555/test',
+    fetch('https://kreditahmini.azurewebsites.net/test',
       {
         method: 'POST',
         headers: {
@@ -61,20 +61,20 @@ export default class CreditPrediction extends Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          'krediMiktari': 4000,
-          'yas': 50,
-          'aldigi_kredi_sayi': 5,
-          'evDurumu': 'evsahibi',
-          'telefonDurumu': 'var'
+          'krediMiktari': this.state.krediMiktar,
+          'yas': this.state.yas,
+          'aldigi_kredi_sayi': this.state.aldigiKrediSayisi,
+          'evDurumu': this.state.evDurumu,
+          'telefonDurumu': this.state.telefonDurumu
         })
       })
 
       .then((response) => response.json())
       .then((resp) => {
         this.setState({ loading: false });
-        alert(JSON.stringify(resp));
-        //var sonuc = resp;
-        //this.props.navigation.navigate('CreditPredictionResult', { krediSonuc: sonuc });
+        //alert(JSON.stringify(resp));
+        var sonuc = resp;
+        this.props.navigation.navigate('CreditPredictionResult', { krediSonuc: sonuc });
       })
       .catch((error) => {
         this.setState({ loading: false });
@@ -87,17 +87,17 @@ export default class CreditPrediction extends Component {
   test = () => {
 
     var sonuc = [
-      {"Model":"LogisticRegression","Oran":"90.64"},
-      {"Model":"GradientBoosting","Oran":"94.02"},
-      {"Model":"NaiveBayes","Oran":"91.55"},
-      {"Model":"DecisionTree(NoParam)","Oran":"100.0"},
-      {"Model":"DecisionTree(GridSearch)","Oran":"54.55"},
-      {"Model":"RandomForest(GridSearch)","Oran":"76.95"},
-      {"Model":"RandomForest(2 Param)","Oran":"90.0"},
-      {"Model":"KNeighborsClassifier","Oran":"100.0"},
-      {"Model":"LinearDiscriminantAnalysis","Oran":"89.44"},
-      {"Model":"AdaBoostClassifier","Oran":"50.95"},
-      {"Model":"BaggingClassifier","Oran":"70.0"}
+      { "Model": "LogisticRegression", "Oran": "90.64" },
+      { "Model": "GradientBoosting", "Oran": "94.02" },
+      { "Model": "NaiveBayes", "Oran": "91.55" },
+      { "Model": "DecisionTree(NoParam)", "Oran": "100.0" },
+      { "Model": "DecisionTree(GridSearch)", "Oran": "54.55" },
+      { "Model": "RandomForest(GridSearch)", "Oran": "76.95" },
+      { "Model": "RandomForest(2 Param)", "Oran": "90.0" },
+      { "Model": "KNeighborsClassifier", "Oran": "100.0" },
+      { "Model": "LinearDiscriminantAnalysis", "Oran": "89.44" },
+      { "Model": "AdaBoostClassifier", "Oran": "50.95" },
+      { "Model": "BaggingClassifier", "Oran": "70.0" }
     ];
 
     this.props.navigation.navigate('CreditPredictionResult', { krediSonuc: sonuc });
@@ -160,7 +160,7 @@ export default class CreditPrediction extends Component {
         <TextInput
           label="Aldığı Kredi Sayısı"
           onChangeText={(aldigiKrediSayisi) => {
-            aldigiKrediSayisi = aldigiKrediSayisi.replace(/[0]*/, '').replace(/[^\d]*/g, '');
+            aldigiKrediSayisi = aldigiKrediSayisi.replace(/[ ]*/, '').replace(/[^\d]*/g, '');
             this.setState({ aldigiKrediSayisi, aldigiKrediSayisiError: '' });
           }}
           value={this.state.aldigiKrediSayisi}
@@ -191,7 +191,7 @@ export default class CreditPrediction extends Component {
           }
         />
 
-        <Button mode="contained" onPress={this.test.bind(this)}>
+        <Button mode="contained" onPress={this.predict.bind(this)}>
           Kredi Tahminle
       </Button>
       </Background>

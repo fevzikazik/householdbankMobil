@@ -30,7 +30,7 @@ export default class HGSDetail extends Component {
   }
 
   componentDidMount = () => {
-    //this.GetTransactions();
+    this.GetTransactions();
   };
 
   static navigationOptions = {
@@ -63,7 +63,7 @@ export default class HGSDetail extends Component {
     let musteri = this.props.screenProps.musteri;
     let secilenHesap = this.props.navigation.state.params.selectedAcc;
 
-    fetch('https://householdapi.azurewebsites.net/api/Islem/getTransaction?hesapNo=' + musteri.hesapNo + '&hesapEkNo=' + secilenHesap.hesapEkNo,
+    fetch('https://householdapi.azurewebsites.net/api/Islem/getTransactionHGS?hesapNo=' + musteri.hesapNo + '&plaka=' + secilenHesap.plaka,
       {
         method: 'GET',
         headers: {
@@ -140,7 +140,7 @@ export default class HGSDetail extends Component {
     const { navigation } = this.props
     navigation.state.params.refreshProps();
     this.updateAccountDetails();
-    //this.GetTransactions();
+    this.GetTransactions();
   }
 
   render() {
@@ -165,7 +165,7 @@ export default class HGSDetail extends Component {
             Üyeliklerime Geri Dön
           </Button>
 
-          <Header>Hesap Hareketleri:</Header>
+          <Header>HGS Hesabı Hareketleri:</Header>
           <FlatList
             style={{ minWidth: 300 }}
             data={this.state.transactionList}
