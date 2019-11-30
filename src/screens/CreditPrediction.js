@@ -14,6 +14,7 @@ import {
   aldigiKrediSayisiValidator
 } from '../core/utils';
 import Loader from '../core/loader';
+import { drawer } from "./Dashboard";
 
 export default class CreditPrediction extends Component {
 
