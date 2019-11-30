@@ -59,7 +59,7 @@ export default class HGS extends Component {
     var accList = this.state.allAccs;
     if (accList != null) {
       for (let acc of accList) {
-        if (acc.plaka == this.state.yeniPlaka) {
+        if (acc.plaka == this.state.yeniPlaka.toUpperCase()) {
           essizMi = false;
           break;
         }
@@ -83,7 +83,7 @@ export default class HGS extends Component {
           'musTCKN': this.props.screenProps.musteri.tcKimlikNo,
           'bakiye': 0,
           'aktifmi': 1,
-          'plaka': this.state.yeniPlaka,
+          'plaka': this.state.yeniPlaka.toUpperCase(),
         })
       })
 
@@ -166,15 +166,14 @@ export default class HGS extends Component {
 
             <TextInput
               label="Plaka"
-              onChangeText={(text) => {
-                //yeniPlaka = yeniPlaka.toUpperCase();
-                text = text.toUpperCase().replace(/[ ]*/, '').replace(/[^a-zA-Z[0-9]]*/g, '');
-                this.setState({ yeniPlaka: text, yeniPlakaError: '' });
-              }}
               value={this.state.yeniPlaka}
               error={!!this.state.yeniPlakaError}
               errorText={this.state.yeniPlakaError}
               maxLength={10}
+              onChangeText={(text) => {
+                text = text.replace(/[ ]*/, '').replace(/[^a-zA-Z[0-9]]*/g, '');
+                this.setState({ yeniPlaka: text, yeniPlakaError: '' });
+              }}
 
             />
 
