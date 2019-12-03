@@ -69,9 +69,17 @@ export const hesapEkNoValidator = text => {
 
 export const plakaValidator = text => {
   if (!text) return 'Plaka boş bırakılamaz.';
-  const re = /([0-9]{2}|[01]{2})([a-z|A-Z]{2,})([0-9]{2,})/;
+
+  var regex, v;
+  v = text.replace(/\s+/g, '').toUpperCase();
+  regex = /^(0[1-9]|[1-7][0-9]|8[01])(([A-Z])(\d{4,5})|([A-Z]{2})(\d{3,4})|([A-Z]{3})(\d{2}))$/;
+  if (v.match(regex) == null) return 'Geçerli bir plaka girin!';
+/*
+  const re = /^(0[1–9]|[1–7][0–9]|8[01])(([a-zA-Z])(\d{4,5})|([a-zA-Z]{2})(\d{3,4})|([a-zA-Z]{3})(\d{2,3}))$/;
   if (!re.test(text)) return 'Geçerli bir plaka girin!';
+*/
   return '';
+
 };
 
 export const krediMiktarValidator = miktar => {
