@@ -121,6 +121,11 @@ export default class Transfer extends Component {
     const alanHesapEkNoError = hesapEkNoValidator(this.state.alanHesapEkNo);
     const miktarError = miktarValidator(this.state.miktar);
 
+    if (this.state.miktar > this.state.gonderenHesapBakiye) {
+      this.setState({ miktarError: 'Bakiyeden yüksek miktar girilemez.'})
+      return;
+    }
+
     if (alanHesapNoError || alanHesapEkNoError || miktarError) {
       this.setState({ alanHesapNoError, alanHesapEkNoError, miktarError })
       return;

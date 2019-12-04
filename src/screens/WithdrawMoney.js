@@ -50,6 +50,11 @@ export default class WithdrawMoney extends Component {
     const miktarError = miktarValidator(this.state.miktar);
     const aciklamaError = aciklamaValidator(this.state.aciklama);
 
+    if (this.state.miktar > this.state.selectedAcc.bakiye) {
+      this.setState({ miktarError: 'Bakiyeden yüksek miktar girilemez.'})
+      return;
+    }
+
     if (miktarError || aciklamaError) {
       this.setState({ miktarError, aciklamaError })
       return;

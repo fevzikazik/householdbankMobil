@@ -148,6 +148,11 @@ export default class TransferSelf extends Component {
 
     const miktarError = miktarValidator(this.state.miktar);
 
+    if (this.state.miktar > this.state.gonderenHesapBakiye) {
+      this.setState({ miktarError: 'Bakiyeden yüksek miktar girilemez.'})
+      return;
+    }
+    
     if (miktarError) {
       this.setState({ miktarError })
       return;

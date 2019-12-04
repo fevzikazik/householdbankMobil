@@ -97,6 +97,11 @@ export default class WithdrawMoneyHGS extends Component {
   bakiyeAktar = () => {
     const miktarError = miktarValidator(this.state.miktar);
 
+    if (this.state.miktar > this.state.selectedAcc.bakiye) {
+      this.setState({ miktarError: 'Bakiyeden yüksek miktar girilemez.'})
+      return;
+    }
+
     if (miktarError) {
       this.setState({ miktarError })
       return;
